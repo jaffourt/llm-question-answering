@@ -1,1 +1,4 @@
 requests
+scikit-learn
+bs4
+openai
