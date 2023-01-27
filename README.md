@@ -1,7 +1,9 @@
-# [PROJECT_NAME]
-[PROJECT_NAME] is a simple Python project that does something cool. 
+# llm-question-answering
+llm-question-answering is a simple Python project that answers questions using a LLM, with an added feature 
+that it uses semantic search across user provided documents used to provide specific context to the LLM.
 
 This python project uses the following technologies by default:
+- openai, beautifulsoup, and scikit-learn for the core features of the model
 - MkDocs for documentation
 - GitHub Actions for continuous integration
 - flake8, mypy, and pylint for linting
@@ -16,20 +18,37 @@ python setup.py install
 ```
 
 ## Usage
-Here is an example of how to use [PROJECT_NAME]:
+An example of using the python API:
 
 ```python
-import my_package
+import os
+from composable_llm import DocumentLoader, LSASearchEngine, GPT3Model
 
-result = my_package.core()
-print(result)
+question = "What is a commonality of wealth distribution between developed nations?"
+
+# Create the models
+doc_loader = DocumentLoader()
+doc_loader.load_documents(file_path='.data/wiki-dow.html')
+search = LSASearchEngine(docs=doc_loader.docs[0], n_components=5)
+search.fit()
+chatbot = GPT3Model(os.getenv("OPENAI_API_KEY"))
+
+# Use the core features
+context = search.search(question)
+response = chatbot.ask(context, question)
+print(response)
+```
+
+An example of interacting with the python module using a CLI
+```shell
+PYTHONPATH=./ python composable_llm/core.py -s $OPENAI_API_KEY -f ./data/wiki-dow.html
 ```
 
 ## Contributing
 We welcome contributions to [PROJECT_NAME]! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
 
 License
-[PROJECT_NAME] is released under the [MIT License](LICENSE).
+llm-question-answering is released under the [MIT License](LICENSE).
 
 ## Generating Documentation
 
